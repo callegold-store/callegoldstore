@@ -180,21 +180,39 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
   // Categorías
-  const getCategories = () => [
-    "Todas",
-    ...new Set(products.map((p) => p.category))
-  ];
+  const categoryOrder = ["Anillos","Manillas","Pulseras","Collares","Aretes","Cadenas","Dijes","Relojes","Otros"];
+  const categoryForProduct = product => {
+    const category = String(product.category || "");
+    if (/anill/i.test(category)) return "Anillos";
+    if (/manill|pulser/i.test(category)) return "Manillas";
+    if (/collar/i.test(category)) return "Collares";
+    if (/aret|topo/i.test(category)) return "Aretes";
+    if (/cadena/i.test(category)) return "Cadenas";
+    if (/dije/i.test(category)) return "Dijes";
+    if (/reloj/i.test(category)) return "Relojes";
+    return "Otros";
+  };
+  const getCategories = () => {
+    const groups = new Set(products.map(categoryForProduct));
+    return ["Todas", ...categoryOrder.filter(category => groups.has(category))];
+  };
 
   const renderFilters = () => {
     const categories = getCategories();
 
-    filters.innerHTML = categories.map((category) => `
-      <button
-        class="filter ${active === category ? "active" : ""}"
-        data-cat="${esc(category)}">
-        ${esc(category)}
-      </button>
-    `).join("");
+    const counts = products.reduce((acc, product) => {
+      const key = categoryForProduct(product);
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+    filters.innerHTML = categories.map((category) => {
+      const count = category === "Todas" ? products.length : (counts[category] || 0);
+      return `
+        <button class="filter ${active === category ? "active" : ""}"
+          data-cat="${esc(category)}" aria-pressed="${active === category}">
+          <span>${esc(category)}</span><span class="filter-count">${count}</span>
+        </button>`;
+    }).join("");
 
     filters.querySelectorAll("button").forEach((button) => {
       button.addEventListener("click", () => {
@@ -209,7 +227,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const render = () => {
     const list = products.filter((p) => {
       const matchesCategory =
-        active === "Todas" || p.category === active;
+        active === "Todas" || categoryForProduct(p) === active;
 
       const text =
         `${p.name} ${p.description} ${p.category} ${p.id}`
