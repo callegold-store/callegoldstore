@@ -2,167 +2,47 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Administración | Callegold</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      --black: #171614;
-      --gold: #c6a45e;
-      --cream: #f5f1e8;
-      --white: #fff;
-      --gray: #77736c;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: var(--cream);
-      color: var(--black);
-    }
-
-    header {
-      background: var(--black);
-      color: var(--white);
-      padding: 20px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 2px solid var(--gold);
-    }
-
-    header h1 {
-      margin: 0;
-      color: var(--gold);
-      font-family: Georgia, serif;
-      letter-spacing: 2px;
-    }
-
-    .container {
-      width: min(1000px, 92%);
-      margin: 45px auto;
-    }
-
-    .panel {
-      background: var(--white);
-      padding: 30px;
-      border: 1px solid #e2dac9;
-      border-radius: 8px;
-      box-shadow: 0 8px 25px #0000000c;
-    }
-
-    h2 { margin-top: 0; }
-
-    label {
-      display: block;
-      margin: 16px 0 7px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    input {
-      width: 100%;
-      padding: 13px;
-      border: 1px solid #d8d0c2;
-      border-radius: 4px;
-      font-size: 15px;
-    }
-
-    button {
-      padding: 12px 18px;
-      border: 0;
-      border-radius: 4px;
-      background: var(--black);
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    button:hover { background: #39352d; }
-
-    .gold-button {
-      background: var(--gold);
-      color: var(--black);
-      margin-top: 20px;
-      width: 100%;
-    }
-
-    .gold-button:hover { background: #b18e49; }
-
-    .logout {
-      background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
-    }
-
-    .message {
-      margin-top: 15px;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .error { color: #b42318; }
-    .success { color: #18733b; }
-
-    .hidden { display: none !important; }
-
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 18px;
-      margin: 25px 0;
-    }
-
-    .stat {
-      background: var(--cream);
-      padding: 22px;
-      border-left: 3px solid var(--gold);
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 28px;
-      margin-top: 10px;
-    }
-
-    .table-wrap { overflow-x: auto; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      min-width: 550px;
-    }
-
-    th, td {
-      padding: 13px;
-      border-bottom: 1px solid #e5dfd3;
-      text-align: left;
-      font-size: 14px;
-    }
-
-    th {
-      background: var(--black);
-      color: var(--gold);
-    }
-
-    .status {
-      color: #18733b;
-      font-weight: bold;
-    }
-
-    @media(max-width: 600px) {
-      header { padding: 17px 4%; }
-      header h1 { font-size: 20px; }
-      .container { margin: 25px auto; }
-      .panel { padding: 20px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administración | Callegold</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--black:#171614;--gold:#c6a45e;--cream:#f5f1e8;--white:#fff;--red:#b42318}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--black)}
+header{background:var(--black);color:white;padding:20px 5%;display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid var(--gold)}
+header h1{margin:0;color:var(--gold);font-family:Georgia,serif;letter-spacing:2px}
+main{width:min(1100px,94%);margin:35px auto}
+.panel{background:white;padding:25px;margin-bottom:22px;border:1px solid #e2dac9;border-radius:7px}
+h2{margin-top:0}
+label{display:block;font-weight:bold;font-size:14px;margin:14px 0 6px}
+input,textarea,select{width:100%;padding:12px;border:1px solid #d8d0c2;border-radius:4px;font:inherit;background:white}
+textarea{min-height:90px;resize:vertical}
+button{padding:11px 16px;border:0;border-radius:4px;background:var(--black);color:white;font-weight:bold;cursor:pointer}
+button:hover{opacity:.88}
+.gold{background:var(--gold);color:var(--black)}
+.danger{background:#a52a2a}
+.secondary{background:#e9e3d8;color:var(--black)}
+.logout{background:transparent;border:1px solid var(--gold);color:var(--gold)}
+.hidden{display:none!important}
+.message{margin-top:12px;font-size:14px;line-height:1.5}
+.error{color:var(--red)}
+.success{color:#18733b}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:15px}
+.stat{background:var(--cream);padding:18px;border-left:3px solid var(--gold)}
+.stat strong{display:block;font-size:27px;margin-top:8px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.full{grid-column:1/-1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:18px;min-width:650px}
+th,td{padding:12px;border-bottom:1px solid #e5dfd3;text-align:left;font-size:14px}
+th{background:var(--black);color:var(--gold)}
+td button{margin:2px;padding:8px 10px}
+.preview{width:85px;height:75px;object-fit:cover;border-radius:4px}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr}.full{grid-column:auto}main{margin:20px auto}.panel{padding:18px}}
+</style>
 </head>
-
 <body>
 
 <header>
@@ -170,112 +50,135 @@
   <button id="logoutButton" class="logout hidden">Cerrar sesión</button>
 </header>
 
-<main class="container">
-
-  <!-- INICIO DE SESIÓN -->
+<main>
   <section id="loginSection" class="panel">
     <h2>Panel administrativo</h2>
     <p>Ingresa con tu cuenta autorizada de Callegold.</p>
-
     <form id="loginForm">
       <label for="email">Correo electrónico</label>
-      <input id="email" type="email" required autocomplete="username"
-             placeholder="admin@callegold.com">
-
+      <input id="email" type="email" required autocomplete="username">
       <label for="password">Contraseña</label>
-      <input id="password" type="password" required
-             autocomplete="current-password" placeholder="Tu contraseña">
-
-      <button class="gold-button" type="submit">Iniciar sesión</button>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button class="gold" style="width:100%;margin-top:18px">Iniciar sesión</button>
     </form>
-
     <p id="loginMessage" class="message" role="status"></p>
   </section>
 
-  <!-- PANEL PRINCIPAL -->
   <section id="dashboardSection" class="hidden">
     <div class="panel">
       <h2>Panel de control</h2>
       <p>Bienvenido, <strong id="adminEmail"></strong></p>
       <p>Rol: <strong id="adminRole"></strong></p>
-
-      <div class="dashboard-grid">
-        <div class="stat">
-          Productos registrados
-          <strong id="productCount">0</strong>
-        </div>
-
-        <div class="stat">
-          Categorías registradas
-          <strong id="categoryCount">0</strong>
-        </div>
+      <div class="grid">
+        <div class="stat">Productos registrados<strong id="productCount">0</strong></div>
+        <div class="stat">Categorías registradas<strong id="categoryCount">0</strong></div>
       </div>
     </div>
 
-    <div class="panel" style="margin-top:25px">
-      <h2>Productos de Callegold</h2>
-      <p>Listado de productos almacenados en Supabase.</p>
+    <section class="panel" id="productFormPanel">
+      <h2 id="formTitle">Registrar nuevo producto</h2>
+      <form id="productForm">
+        <div class="form-grid">
+          <div>
+            <label for="reference">Referencia</label>
+            <input id="reference" maxlength="30" required placeholder="Ej. 33">
+          </div>
+          <div>
+            <label for="name">Nombre del producto</label>
+            <input id="name" maxlength="120" required>
+          </div>
+          <div class="full">
+            <label for="description">Descripción</label>
+            <textarea id="description"></textarea>
+          </div>
+          <div>
+            <label for="price">Precio (COP)</label>
+            <input id="price" type="number" min="0" step="1" placeholder="Dejar vacío si es por consultar">
+          </div>
+          <div>
+            <label for="stock">Stock</label>
+            <input id="stock" type="number" min="0" step="1" value="0" required>
+          </div>
+          <div>
+            <label for="category">Categoría</label>
+            <select id="category" required></select>
+          </div>
+          <div>
+            <label for="active">Estado</label>
+            <select id="active">
+              <option value="true">Activo</option>
+              <option value="false">Inactivo</option>
+            </select>
+          </div>
+          <div class="full">
+            <label for="image">Fotografía del producto</label>
+            <input id="image" type="file" accept="image/jpeg,image/png,image/webp">
+            <small>Formatos JPG, PNG o WEBP. Máximo 5 MB.</small>
+            <p id="currentImage"></p>
+          </div>
+        </div>
+        <div class="actions">
+          <button id="saveButton" class="gold" type="submit">Guardar producto</button>
+          <button id="cancelButton" class="secondary hidden" type="button">Cancelar edición</button>
+        </div>
+      </form>
+      <p id="formMessage" class="message" role="status"></p>
+    </section>
 
-      <button id="refreshButton">Actualizar listado</button>
-
+    <section class="panel">
+      <h2>Catálogo de productos</h2>
+      <div class="actions">
+        <button id="refreshButton">Actualizar listado</button>
+      </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
-              <th>Referencia</th>
-              <th>Producto</th>
-              <th>Precio</th>
-              <th>Stock</th>
-              <th>Estado</th>
+              <th>Foto</th><th>Referencia</th><th>Producto</th>
+              <th>Precio</th><th>Stock</th><th>Estado</th><th>Acciones</th>
             </tr>
           </thead>
           <tbody id="productsTable">
-            <tr><td colspan="5">Cargando productos...</td></tr>
+            <tr><td colspan="7">Cargando...</td></tr>
           </tbody>
         </table>
       </div>
-
-      <p id="dashboardMessage" class="message" role="status"></p>
-    </div>
+      <p id="listMessage" class="message" role="status"></p>
+    </section>
   </section>
-
 </main>
 
 <script>
 (() => {
   const SUPABASE_URL = "https://xwczqbocbsythaegyonh.supabase.co";
   const SUPABASE_KEY = "sb_publishable_RPwSuH7ia7ctxVK4I8meFw_3qDlaw2P";
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  const $ = id => document.getElementById(id);
+  let currentUser = null;
+  let currentRole = null;
+  let categories = [];
+  let products = [];
+  let editingId = null;
+  let oldImageUrl = null;
 
-  const loginSection = document.getElementById("loginSection");
-  const dashboardSection = document.getElementById("dashboardSection");
-  const loginForm = document.getElementById("loginForm");
-  const loginMessage = document.getElementById("loginMessage");
-  const dashboardMessage = document.getElementById("dashboardMessage");
-  const logoutButton = document.getElementById("logoutButton");
-
-  function showMessage(element, message, type = "error") {
-    element.textContent = message;
-    element.className = "message " + type;
+  function message(id, text, type = "error") {
+    $(id).textContent = text;
+    $(id).className = "message " + type;
   }
 
   function showLogin() {
-    loginSection.classList.remove("hidden");
-    dashboardSection.classList.add("hidden");
-    logoutButton.classList.add("hidden");
+    $("loginSection").classList.remove("hidden");
+    $("dashboardSection").classList.add("hidden");
+    $("logoutButton").classList.add("hidden");
   }
 
   function showDashboard(user, role) {
-    loginSection.classList.add("hidden");
-    dashboardSection.classList.remove("hidden");
-    logoutButton.classList.remove("hidden");
-
-    document.getElementById("adminEmail").textContent = user.email;
-    document.getElementById("adminRole").textContent = role;
+    $("loginSection").classList.add("hidden");
+    $("dashboardSection").classList.remove("hidden");
+    $("logoutButton").classList.remove("hidden");
+    $("adminEmail").textContent = user.email;
+    $("adminRole").textContent = role;
   }
 
   async function verifyAdmin(user) {
@@ -285,112 +188,272 @@
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (error) {
-      throw new Error("No fue posible verificar los permisos del administrador.");
-    }
-
+    if (error) throw new Error("No fue posible verificar los permisos.");
     if (!data) {
       await db.auth.signOut();
-      throw new Error("Tu cuenta no está autorizada para acceder al panel.");
+      throw new Error("Esta cuenta no está autorizada.");
     }
 
+    currentUser = user;
+    currentRole = data.role;
     showDashboard(user, data.role);
-    await loadDashboardData();
+    await loadData();
   }
 
-  async function loadDashboardData() {
-    dashboardMessage.textContent = "Consultando información...";
+  async function loadCategories() {
+    const { data, error } = await db
+      .from("categories")
+      .select("id, name")
+      .order("name");
 
-    const [productsResult, categoriesResult] = await Promise.all([
-      db.from("products").select("id, reference, name, price, stock, is_active"),
-      db.from("categories").select("id")
-    ]);
+    if (error) throw error;
 
-    if (productsResult.error || categoriesResult.error) {
-      showMessage(
-        dashboardMessage,
-        "No se pudieron cargar los datos. Verifica las políticas RLS."
-      );
+    categories = data || [];
+    $("categoryCount").textContent = categories.length;
+
+    const select = $("category");
+    select.replaceChildren();
+
+    categories.forEach(category => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = category.name;
+      select.appendChild(option);
+    });
+  }
+
+  async function loadProducts() {
+    const { data, error } = await db
+      .from("products")
+      .select("id, reference, name, description, price, image_url, category_id, is_active, stock")
+      .order("reference");
+
+    if (error) throw error;
+
+    products = data || [];
+    $("productCount").textContent = products.length;
+
+    const table = $("productsTable");
+    table.replaceChildren();
+
+    if (!products.length) {
+      const row = table.insertRow();
+      const cell = row.insertCell();
+      cell.colSpan = 7;
+      cell.textContent = "No hay productos registrados.";
       return;
     }
 
-    const products = productsResult.data || [];
-    const categories = categoriesResult.data || [];
+    products.forEach(product => {
+      const row = table.insertRow();
 
-    document.getElementById("productCount").textContent = products.length;
-    document.getElementById("categoryCount").textContent = categories.length;
+      const photoCell = row.insertCell();
+      if (product.image_url) {
+        const img = document.createElement("img");
+        img.className = "preview";
+        img.src = product.image_url;
+        img.alt = product.name;
+        photoCell.appendChild(img);
+      } else {
+        photoCell.textContent = "Sin foto";
+      }
 
-    const table = document.getElementById("productsTable");
-
-    if (!products.length) {
-      table.innerHTML = '<tr><td colspan="5">No hay productos registrados.</td></tr>';
-    } else {
-      table.innerHTML = products.map(product => {
-        const row = document.createElement("tr");
-
-        const values = [
-          product.reference || "Sin referencia",
-          product.name || "Sin nombre",
-          product.price == null
-            ? "Por consultar"
-            : "$" + Number(product.price).toLocaleString("es-CO"),
-          product.stock ?? 0,
-          product.is_active ? "Activo" : "Inactivo"
-        ];
-
-        values.forEach((value, index) => {
-          const cell = document.createElement("td");
-          cell.textContent = value;
-
-          if (index === 4 && product.is_active) {
-            cell.className = "status";
-          }
-
-          row.appendChild(cell);
-        });
-
-        return row;
+      [
+        product.reference || "—",
+        product.name || "Sin nombre",
+        product.price == null
+          ? "Por consultar"
+          : "$" + Number(product.price).toLocaleString("es-CO"),
+        product.stock ?? 0,
+        product.is_active ? "Activo" : "Inactivo"
+      ].forEach(value => {
+        row.insertCell().textContent = value;
       });
 
-      table.replaceChildren(...table.innerHTML ? [] : []);
-      table.replaceChildren(...products.map(product => {
-        const row = document.createElement("tr");
-        [
-          product.reference || "Sin referencia",
-          product.name || "Sin nombre",
-          product.price == null
-            ? "Por consultar"
-            : "$" + Number(product.price).toLocaleString("es-CO"),
-          product.stock ?? 0,
-          product.is_active ? "Activo" : "Inactivo"
-        ].forEach((value, index) => {
-          const cell = document.createElement("td");
-          cell.textContent = value;
-          if (index === 4 && product.is_active) cell.className = "status";
-          row.appendChild(cell);
-        });
-        return row;
-      }));
-    }
+      const actions = row.insertCell();
 
-    showMessage(dashboardMessage, "Información actualizada correctamente.", "success");
+      const edit = document.createElement("button");
+      edit.textContent = "Editar";
+      edit.className = "gold";
+      edit.addEventListener("click", () => editProduct(product));
+
+      const remove = document.createElement("button");
+      remove.textContent = "Eliminar";
+      remove.className = "danger";
+      remove.addEventListener("click", () => deleteProduct(product));
+
+      actions.append(edit, remove);
+    });
   }
 
-  loginForm.addEventListener("submit", async event => {
+  async function loadData() {
+    try {
+      message("listMessage", "Actualizando información...", "success");
+      await loadCategories();
+      await loadProducts();
+      message("listMessage", "Catálogo actualizado correctamente.", "success");
+    } catch (error) {
+      console.error(error);
+      message("listMessage", "Error al cargar datos. Revisa los permisos de Supabase.");
+    }
+  }
+
+  function resetForm() {
+    $("productForm").reset();
+    $("stock").value = 0;
+    editingId = null;
+    oldImageUrl = null;
+    $("formTitle").textContent = "Registrar nuevo producto";
+    $("saveButton").textContent = "Guardar producto";
+    $("cancelButton").classList.add("hidden");
+    $("currentImage").textContent = "";
+    $("image").value = "";
+  }
+
+  function editProduct(product) {
+    editingId = product.id;
+    oldImageUrl = product.image_url;
+
+    $("reference").value = product.reference || "";
+    $("name").value = product.name || "";
+    $("description").value = product.description || "";
+    $("price").value = product.price ?? "";
+    $("stock").value = product.stock ?? 0;
+    $("category").value = product.category_id || "";
+    $("active").value = String(product.is_active);
+    $("image").value = "";
+
+    $("formTitle").textContent = "Editar producto";
+    $("saveButton").textContent = "Guardar cambios";
+    $("cancelButton").classList.remove("hidden");
+    $("currentImage").textContent = oldImageUrl
+      ? "Este producto ya tiene una fotografía. Si no seleccionas otra, se conservará."
+      : "Este producto todavía no tiene fotografía.";
+
+    $("productFormPanel").scrollIntoView({ behavior: "smooth" });
+  }
+
+  async function uploadImage(file) {
+    if (!file) return oldImageUrl;
+
+    const allowed = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowed.includes(file.type)) {
+      throw new Error("Formato no permitido. Usa JPG, PNG o WEBP.");
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("La fotografía supera el límite de 5 MB.");
+    }
+
+    const extension = file.name.split(".").pop().toLowerCase();
+    const path = `${crypto.randomUUID()}.${extension}`;
+
+    const { error } = await db.storage
+      .from("products")
+      .upload(path, file, { upsert: false });
+
+    if (error) throw error;
+
+    const { data } = db.storage
+      .from("products")
+      .getPublicUrl(path);
+
+    return data.publicUrl;
+  }
+
+  $("productForm").addEventListener("submit", async event => {
     event.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    const button = $("saveButton");
+    button.disabled = true;
+    button.textContent = "Guardando...";
 
-    showMessage(loginMessage, "Verificando acceso...", "success");
+    try {
+      const reference = $("reference").value.trim();
+      const name = $("name").value.trim();
+      const priceValue = $("price").value;
+      const stock = Number($("stock").value);
+
+      if (!reference || !name) {
+        throw new Error("La referencia y el nombre son obligatorios.");
+      }
+
+      if (!Number.isInteger(stock) || stock < 0) {
+        throw new Error("El stock debe ser un número entero igual o mayor que cero.");
+      }
+
+      const imageUrl = await uploadImage($("image").files[0]);
+
+      const productData = {
+        reference,
+        name,
+        description: $("description").value.trim(),
+        price: priceValue === "" ? null : Number(priceValue),
+        stock,
+        category_id: $("category").value,
+        is_active: $("active").value === "true",
+        image_url: imageUrl
+      };
+
+      const result = editingId
+        ? await db.from("products").update(productData).eq("id", editingId)
+        : await db.from("products").insert(productData);
+
+      if (result.error) throw result.error;
+
+      message("formMessage",
+        editingId ? "Producto actualizado correctamente." : "Producto creado correctamente.",
+        "success"
+      );
+
+      resetForm();
+      await loadData();
+
+    } catch (error) {
+      console.error(error);
+      message("formMessage", error.message || "No fue posible guardar el producto.");
+    } finally {
+      button.disabled = false;
+      button.textContent = editingId ? "Guardar cambios" : "Guardar producto";
+    }
+  });
+
+  async function deleteProduct(product) {
+    const confirmed = confirm(
+      `¿Seguro que deseas eliminar "${product.name}" (REF. ${product.reference})? Esta acción no se puede deshacer.`
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const { error } = await db
+        .from("products")
+        .delete()
+        .eq("id", product.id);
+
+      if (error) throw error;
+
+      message("listMessage", "Producto eliminado correctamente.", "success");
+      if (editingId === product.id) resetForm();
+      await loadData();
+
+    } catch (error) {
+      console.error(error);
+      message("listMessage", "No se pudo eliminar el producto. Revisa los permisos.");
+    }
+  }
+
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+    message("loginMessage", "Verificando acceso...", "success");
 
     const { data, error } = await db.auth.signInWithPassword({
-      email,
-      password
+      email: $("email").value.trim(),
+      password: $("password").value
     });
 
     if (error) {
-      showMessage(loginMessage, "No se pudo iniciar sesión. Revisa el correo y la contraseña.");
+      message("loginMessage", "Correo o contraseña incorrectos.");
       return;
     }
 
@@ -398,18 +461,21 @@
       await verifyAdmin(data.user);
     } catch (error) {
       showLogin();
-      showMessage(loginMessage, error.message);
+      message("loginMessage", error.message);
     }
   });
 
-  logoutButton.addEventListener("click", async () => {
+  $("logoutButton").addEventListener("click", async () => {
     await db.auth.signOut();
+    currentUser = null;
+    currentRole = null;
     showLogin();
-    loginForm.reset();
-    showMessage(loginMessage, "Sesión cerrada correctamente.", "success");
+    $("loginForm").reset();
+    message("loginMessage", "Sesión cerrada correctamente.", "success");
   });
 
-  document.getElementById("refreshButton").addEventListener("click", loadDashboardData);
+  $("cancelButton").addEventListener("click", resetForm);
+  $("refreshButton").addEventListener("click", loadData);
 
   async function initialize() {
     const { data, error } = await db.auth.getSession();
@@ -423,14 +489,12 @@
       await verifyAdmin(data.session.user);
     } catch (error) {
       showLogin();
-      showMessage(loginMessage, error.message);
+      message("loginMessage", error.message);
     }
   }
 
   initialize();
 })();
 </script>
-
 </body>
 </html>
-
