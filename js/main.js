@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       "'": "&#39;"
     })[c]);
 
+  // Formato de precios en pesos colombianos
   const formatPrice = (price) => {
     if (price === null || price === undefined || price === "") {
       return "Precio por consultar";
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => t.classList.remove("show"), 2000);
   };
 
-  // Cargar productos directamente desde Supabase
+  // Cargar productos desde Supabase
   const loadProducts = async () => {
     try {
       const db = window.callegoldDB;
@@ -86,15 +87,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       window.CALLEGOLD_PRODUCTS = products;
 
-      console.log("Productos cargados desde Supabase:", products.length);
+      console.log(
+        "Productos cargados desde Supabase:",
+        products.length
+      );
 
     } catch (error) {
       console.error("Error cargando productos:", error);
       toast("No fue posible cargar el catálogo.");
+
       products = window.CALLEGOLD_PRODUCTS || [];
     }
   };
 
+  // Elementos de la ventana de detalles
   const modal = document.getElementById("productModal");
   const modalImg = document.getElementById("modalProductImage");
   const modalName = document.getElementById("modalProductName");
@@ -103,6 +109,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const modalCategory = document.getElementById("modalProductCategory");
   const modalWhatsApp = document.getElementById("modalWhatsApp");
 
+  // Elemento que muestra el precio en la ventana de detalles
+  const modalPrice = modal?.querySelector(".modal-price");
+
+  // Abrir detalles del producto
   const openProduct = (p) => {
     selectedProduct = p;
 
@@ -112,8 +122,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     modalImg.alt = p.name;
     modalName.textContent = p.name;
     modalDesc.textContent = p.description;
-    modalRef.textContent = "REF. " + String(p.id).padStart(2, "0");
+
+    modalRef.textContent =
+      "REF. " + String(p.id).padStart(2, "0");
+
     modalCategory.textContent = p.category.toUpperCase();
+
+    // Mostrar el precio actualizado desde Supabase
+    if (modalPrice) {
+      modalPrice.textContent = formatPrice(p.price);
+    }
 
     const message =
       "Hola Callegold, estoy interesado(a) en esta joya:\n\n" +
@@ -124,14 +142,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       "¿Me pueden confirmar la disponibilidad?";
 
     modalWhatsApp.href =
-      "https://wa.me/" + waNumber + "?text=" +
-      encodeURIComponent(message);
+      "https://wa.me/" + waNumber +
+      "?text=" + encodeURIComponent(message);
 
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     document.body.classList.add("modal-open");
   };
 
+  // Cerrar detalles
   const closeProduct = () => {
     if (!modal) return;
 
@@ -140,7 +159,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.classList.remove("modal-open");
   };
 
-  document.getElementById("modalClose")?.addEventListener("click", closeProduct);
+  document.getElementById("modalClose")
+    ?.addEventListener("click", closeProduct);
 
   modal?.querySelectorAll("[data-modal-close]").forEach((el) => {
     el.addEventListener("click", closeProduct);
@@ -150,13 +170,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.key === "Escape") closeProduct();
   });
 
-  document.getElementById("modalAddCart")?.addEventListener("click", () => {
-    if (!selectedProduct) return;
+  // Agregar producto al carrito
+  document.getElementById("modalAddCart")
+    ?.addEventListener("click", () => {
+      if (!selectedProduct) return;
 
-    window.CallegoldCart.add(selectedProduct.id);
-    toast("Añadido a tu selección");
-  });
+      window.CallegoldCart.add(selectedProduct.id);
+      toast("Añadido a tu selección");
+    });
 
+  // Categorías
   const getCategories = () => [
     "Todas",
     ...new Set(products.map((p) => p.category))
@@ -182,30 +205,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
+  // Mostrar catálogo
   const render = () => {
     const list = products.filter((p) => {
       const matchesCategory =
         active === "Todas" || p.category === active;
 
-      const text = `${p.name} ${p.description} ${p.category} ${p.id}`
-        .toLowerCase();
+      const text =
+        `${p.name} ${p.description} ${p.category} ${p.id}`
+          .toLowerCase();
 
-      return matchesCategory && text.includes(query.toLowerCase());
+      return matchesCategory &&
+        text.includes(query.toLowerCase());
     });
 
     document.getElementById("resultsCount").textContent =
       `${list.length} ${list.length === 1 ? "pieza" : "piezas"}`;
 
-    document.getElementById("emptyState").hidden = list.length > 0;
+    document.getElementById("emptyState").hidden =
+      list.length > 0;
 
     grid.innerHTML = list.map((p) => `
       <article class="card">
+
         <button
           class="product-card-open"
           data-product="${esc(p.id)}"
           aria-label="Ver detalles de ${esc(p.name)}">
 
           <div class="photo">
+
             <img
               loading="lazy"
               src="${esc(p.image)}"
@@ -215,23 +244,40 @@ document.addEventListener("DOMContentLoaded", async () => {
               REF. ${String(p.id).padStart(2, "0")}
             </span>
 
-            <span class="view-product">Ver detalles ↗</span>
+            <span class="view-product">
+              Ver detalles ↗
+            </span>
+
           </div>
 
           <div class="info">
-            <p class="category">${esc(p.category)}</p>
+
+            <p class="category">
+              ${esc(p.category)}
+            </p>
+
             <h3>${esc(p.name)}</h3>
-            <p class="description">${esc(p.description)}</p>
-            <p class="price">${formatPrice(p.price)}</p>
+
+            <p class="description">
+              ${esc(p.description)}
+            </p>
+
+            <p class="price">
+              ${formatPrice(p.price)}
+            </p>
+
           </div>
+
         </button>
 
         <button class="add" data-add="${esc(p.id)}">
           ＋ Añadir a mi selección
         </button>
+
       </article>
     `).join("");
 
+    // Eventos para abrir los detalles
     grid.querySelectorAll("[data-product]").forEach((button) => {
       button.addEventListener("click", () => {
         const product = products.find(
@@ -242,6 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
+    // Eventos para agregar al carrito
     grid.querySelectorAll("[data-add]").forEach((button) => {
       button.addEventListener("click", () => {
         window.CallegoldCart.add(button.dataset.add);
@@ -250,7 +297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   };
 
-  // Carrito
+  // Carrito de compras
   const drawer = document.getElementById("drawer");
   const shade = document.getElementById("shade");
 
@@ -264,52 +311,67 @@ document.addEventListener("DOMContentLoaded", async () => {
     shade.classList.remove("open");
   };
 
-  document.getElementById("cartOpen")?.addEventListener("click", openCart);
-  document.getElementById("cartClose")?.addEventListener("click", closeCart);
+  document.getElementById("cartOpen")
+    ?.addEventListener("click", openCart);
+
+  document.getElementById("cartClose")
+    ?.addEventListener("click", closeCart);
+
   shade?.addEventListener("click", closeCart);
 
-  document.getElementById("clearCart")?.addEventListener("click", () => {
-    window.CallegoldCart.clear();
-    toast("Selección vaciada");
-  });
+  document.getElementById("clearCart")
+    ?.addEventListener("click", () => {
+      window.CallegoldCart.clear();
+      toast("Selección vaciada");
+    });
 
-  document.getElementById("checkout")?.addEventListener("click", () => {
-    const message = window.CallegoldCart.message();
+  document.getElementById("checkout")
+    ?.addEventListener("click", () => {
+      const message = window.CallegoldCart.message();
 
-    if (!message) {
-      toast("Añade productos primero");
-      return;
-    }
+      if (!message) {
+        toast("Añade productos primero");
+        return;
+      }
 
-    window.open(
-      "https://wa.me/" + waNumber + "?text=" +
-      encodeURIComponent(message),
-      "_blank",
-      "noopener"
-    );
-  });
+      window.open(
+        "https://wa.me/" + waNumber +
+        "?text=" + encodeURIComponent(message),
+        "_blank",
+        "noopener"
+      );
+    });
 
-  // Buscador y navegación
+  // Buscador
   search?.addEventListener("input", (e) => {
     query = e.target.value;
     render();
   });
 
+  // Menú de navegación
   const nav = document.getElementById("nav");
 
-  document.getElementById("menuToggle")?.addEventListener("click", () => {
-    nav.classList.toggle("open");
-  });
+  document.getElementById("menuToggle")
+    ?.addEventListener("click", () => {
+      nav.classList.toggle("open");
+    });
 
   nav?.querySelectorAll("a").forEach((a) => {
-    a.addEventListener("click", () => nav.classList.remove("open"));
+    a.addEventListener("click", () => {
+      nav.classList.remove("open");
+    });
   });
 
+  // Año del pie de página
   const year = document.getElementById("year");
-  if (year) year.textContent = new Date().getFullYear();
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
 
   // Inicializar catálogo
   await loadProducts();
+
   renderFilters();
   render();
 
