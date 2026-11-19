@@ -46,3 +46,35 @@ footer{background:#171510;padding:55px 20px 28px}footer .brand b{color:#e6d7bd}f
 .catalog-toolbar{margin-bottom:10px}.search-wrap{max-width:none}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 11px}.info{padding:12px 10px 8px}.info h3{font-size:16px}.description{font-size:9px;min-height:44px}.card>.add{width:calc(100% - 20px);margin:7px 10px 11px;padding:10px 5px;font-size:8px}
 .banner{display:block;padding:48px 7%}.banner h2{font-size:50px;margin-bottom:24px}footer div{flex-direction:column;gap:12px}.result-line{font-size:8px}.drawer{padding:21px}}
 @media(max-width:380px){.grid{gap:16px 8px}.info h3{font-size:15px}.description{min-height:50px}}
+
+/* Catálogo renovado: filtros laterales desplegables */
+.catalog-toolbar{justify-content:space-between;align-items:center;flex-wrap:wrap}
+.filter-toggle{display:inline-flex;align-items:center;gap:11px;background:#171715;color:#f4eee3;border:1px solid #c8ad75;padding:13px 17px;font-size:10px;letter-spacing:1px;text-transform:uppercase;transition:background .2s,color .2s}
+.filter-toggle:hover{background:#c8ad75;color:#171715}
+.filter-toggle-icon{font-size:17px;line-height:1}
+.filter-toggle-count{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:50%;background:#c8ad75;color:#171715;font-size:9px}
+.filter-backdrop{position:fixed;inset:0;background:#11110f99;backdrop-filter:blur(3px);z-index:40;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s}
+.category-sidebar.filter-drawer{position:fixed;z-index:41;left:0;top:0;bottom:0;width:min(370px,88vw);height:100dvh;overflow:auto;position:fixed;transform:translateX(-105%);transition:transform .3s ease;background:#faf8f3;padding:30px 28px;box-shadow:20px 0 60px #0002;border:0}
+.category-sidebar.filter-drawer.is-open{transform:translateX(0)}
+.filter-backdrop.is-open{opacity:1;visibility:visible}
+body.filters-open{overflow:hidden}
+.sidebar-heading{align-items:flex-start}
+.sidebar-heading div{display:flex;flex-direction:column;gap:7px}
+.sidebar-heading span{font:500 27px "Playfair Display",Georgia,serif}
+.filter-close{width:36px;height:36px;padding:0;background:#171715;color:#e1d0a7;font-size:24px;line-height:1}
+.sidebar-divider{height:1px;background:#e4ded1;margin:24px 0}
+.type-filters{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.type-filter{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:13px 11px;border:1px solid #ded5c7;background:#fff;color:#554b3c;text-align:left;font-size:11px;transition:all .2s}
+.type-filter.active,.type-filter:hover{background:#171715;color:#e1d0a7;border-color:#171715}
+.type-filter:disabled{opacity:.4;cursor:not-allowed;background:#eeeae3}
+.type-filter small{font-size:9px;color:#a88b5a}
+.type-filter.active small,.type-filter:hover small{color:#e1d0a7}
+.clear-filters{width:100%;margin-top:26px;padding:13px;border:1px solid #c8ad75;background:transparent;color:#574a35;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.clear-filters:hover{background:#c8ad75;color:#171715}
+.catalog-layout{display:block}
+@media(max-width:700px){
+.catalog-toolbar{align-items:stretch}
+.filter-toggle{justify-content:center;width:100%}
+.search-wrap{max-width:none}
+.category-sidebar.filter-drawer{padding:24px 20px}
+}
