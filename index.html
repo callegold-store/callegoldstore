@@ -67,6 +67,17 @@
   </div>
   <div class="grid" id="productGrid"></div>
   <p id="emptyState" hidden>No encontramos piezas con esa búsqueda.</p>
+
+  <div class="filter-backdrop" id="filterBackdrop"></div>
+  <aside class="category-sidebar filter-drawer" id="categorySidebar" aria-label="Filtros de productos" aria-hidden="true">
+    <div class="sidebar-heading"><div><small>CALLEGOLD · CATÁLOGO</small><span>Encuentra tu joya</span></div><button class="filter-close" id="filterClose" type="button" aria-label="Cerrar filtros">×</button></div>
+    <p class="sidebar-label">TIPO DE JOYA</p>
+    <div id="typeFilters" class="filters type-filters"></div>
+    <div class="sidebar-divider"></div>
+    <p class="sidebar-label">COLECCIONES</p>
+    <div id="filters" class="filters"></div>
+    <button class="clear-filters" id="clearFilters" type="button">Limpiar filtros</button>
+  </aside>
 </section>
 
 <section class="editorial editorial-reverse">
