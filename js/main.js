@@ -192,6 +192,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (/reloj/i.test(category)) return "Relojes";
     return "Otros";
   };
+  let activeType = "Todas";
+
+  const productTypeFor = (product) => {
+    const text = `${product.name} ${product.description} ${product.category}`.toLowerCase();
+    if (/anill|sortij/.test(text)) return "Anillos";
+    if (/arete|pendiente|topo/.test(text)) return "Aretes";
+    if (/collar|cadena|gargantilla/.test(text)) return "Collares";
+    if (/combo|conjunto|dúo|duo/.test(text)) return "Conjuntos";
+    if (/pulsera|manilla|balin|tejid|san benito|escapulario/.test(text)) return "Manillas";
+    return "Otros";
+  };
+
   const getCategories = () => {
     const groups = new Set(products.map(categoryForProduct));
     return ["Todas", ...categoryOrder.filter(category => groups.has(category))];
@@ -199,12 +211,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const renderFilters = () => {
     const categories = getCategories();
-
     const counts = products.reduce((acc, product) => {
       const key = categoryForProduct(product);
       acc[key] = (acc[key] || 0) + 1;
       return acc;
     }, {});
+
     filters.innerHTML = categories.map((category) => {
       const count = category === "Todas" ? products.length : (counts[category] || 0);
       return `
@@ -221,19 +233,84 @@ document.addEventListener("DOMContentLoaded", async () => {
         render();
       });
     });
+
+    const typeCounts = products.reduce((acc, product) => {
+      const type = productTypeFor(product);
+      acc[type] = (acc[type] || 0) + 1;
+      return acc;
+    }, {});
+    const typeOptions = ["Todas", "Anillos", "Manillas", "Aretes", "Collares", "Conjuntos"];
+    const typeFilters = document.getElementById("typeFilters");
+    typeFilters.innerHTML = typeOptions.map(type => {
+      const count = type === "Todas" ? products.length : (typeCounts[type] || 0);
+      const unavailable = type !== "Todas" && count === 0;
+      return `
+        <button class="type-filter ${activeType === type ? "active" : ""}"
+          data-type="${esc(type)}" aria-pressed="${activeType === type}"
+          ${unavailable ? "disabled" : ""}>
+          <span>${esc(type)}</span><small>${count}</small>
+        </button>`;
+    }).join("");
+
+    typeFilters.querySelectorAll("[data-type]").forEach(button => {
+      button.addEventListener("click", () => {
+        activeType = button.dataset.type;
+        active = "Todas";
+        renderFilters();
+        render();
+      });
+    });
+
+    const activeCount = (active !== "Todas" ? 1 : 0) + (activeType !== "Todas" ? 1 : 0);
+    const countNode = document.getElementById("activeFilterCount");
+    if (countNode) countNode.textContent = activeCount;
   };
+
+  const closeFilterDrawer = () => {
+    document.getElementById("categorySidebar").classList.remove("is-open");
+    document.getElementById("filterBackdrop").classList.remove("is-open");
+    document.body.classList.remove("filters-open");
+    document.getElementById("filterToggle").setAttribute("aria-expanded", "false");
+    document.getElementById("categorySidebar").setAttribute("aria-hidden", "true");
+  };
+
+  document.getElementById("filterToggle").addEventListener("click", () => {
+    const drawer = document.getElementById("categorySidebar");
+    const opening = !drawer.classList.contains("is-open");
+    drawer.classList.toggle("is-open", opening);
+    document.getElementById("filterBackdrop").classList.toggle("is-open", opening);
+    document.body.classList.toggle("filters-open", opening);
+    document.getElementById("filterToggle").setAttribute("aria-expanded", String(opening));
+    drawer.setAttribute("aria-hidden", String(!opening));
+  });
+  document.getElementById("filterClose").addEventListener("click", closeFilterDrawer);
+  document.getElementById("filterBackdrop").addEventListener("click", closeFilterDrawer);
+  document.getElementById("clearFilters").addEventListener("click", () => {
+    active = "Todas";
+    activeType = "Todas";
+    query = "";
+    search.value = "";
+    renderFilters();
+    render();
+    closeFilterDrawer();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") closeFilterDrawer();
+  });
 
   // Mostrar catálogo
   const render = () => {
     const list = products.filter((p) => {
       const matchesCategory =
         active === "Todas" || categoryForProduct(p) === active;
+      const matchesType =
+        activeType === "Todas" || productTypeFor(p) === activeType;
 
       const text =
         `${p.name} ${p.description} ${p.category} ${p.id}`
           .toLowerCase();
 
-      return matchesCategory &&
+      return matchesCategory && matchesType &&
         text.includes(query.toLowerCase());
     });
 
