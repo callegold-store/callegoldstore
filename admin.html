@@ -1,1 +1,436 @@
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administración | Callegold</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --black: #171614;
+      --gold: #c6a45e;
+      --cream: #f5f1e8;
+      --white: #fff;
+      --gray: #77736c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--cream);
+      color: var(--black);
+    }
+
+    header {
+      background: var(--black);
+      color: var(--white);
+      padding: 20px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--gold);
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--gold);
+      font-family: Georgia, serif;
+      letter-spacing: 2px;
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: 45px auto;
+    }
+
+    .panel {
+      background: var(--white);
+      padding: 30px;
+      border: 1px solid #e2dac9;
+      border-radius: 8px;
+      box-shadow: 0 8px 25px #0000000c;
+    }
+
+    h2 { margin-top: 0; }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d8d0c2;
+      border-radius: 4px;
+      font-size: 15px;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 4px;
+      background: var(--black);
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover { background: #39352d; }
+
+    .gold-button {
+      background: var(--gold);
+      color: var(--black);
+      margin-top: 20px;
+      width: 100%;
+    }
+
+    .gold-button:hover { background: #b18e49; }
+
+    .logout {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .error { color: #b42318; }
+    .success { color: #18733b; }
+
+    .hidden { display: none !important; }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin: 25px 0;
+    }
+
+    .stat {
+      background: var(--cream);
+      padding: 22px;
+      border-left: 3px solid var(--gold);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 28px;
+      margin-top: 10px;
+    }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      min-width: 550px;
+    }
+
+    th, td {
+      padding: 13px;
+      border-bottom: 1px solid #e5dfd3;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: var(--black);
+      color: var(--gold);
+    }
+
+    .status {
+      color: #18733b;
+      font-weight: bold;
+    }
+
+    @media(max-width: 600px) {
+      header { padding: 17px 4%; }
+      header h1 { font-size: 20px; }
+      .container { margin: 25px auto; }
+      .panel { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>CALLEGOLD</h1>
+  <button id="logoutButton" class="logout hidden">Cerrar sesión</button>
+</header>
+
+<main class="container">
+
+  <!-- INICIO DE SESIÓN -->
+  <section id="loginSection" class="panel">
+    <h2>Panel administrativo</h2>
+    <p>Ingresa con tu cuenta autorizada de Callegold.</p>
+
+    <form id="loginForm">
+      <label for="email">Correo electrónico</label>
+      <input id="email" type="email" required autocomplete="username"
+             placeholder="admin@callegold.com">
+
+      <label for="password">Contraseña</label>
+      <input id="password" type="password" required
+             autocomplete="current-password" placeholder="Tu contraseña">
+
+      <button class="gold-button" type="submit">Iniciar sesión</button>
+    </form>
+
+    <p id="loginMessage" class="message" role="status"></p>
+  </section>
+
+  <!-- PANEL PRINCIPAL -->
+  <section id="dashboardSection" class="hidden">
+    <div class="panel">
+      <h2>Panel de control</h2>
+      <p>Bienvenido, <strong id="adminEmail"></strong></p>
+      <p>Rol: <strong id="adminRole"></strong></p>
+
+      <div class="dashboard-grid">
+        <div class="stat">
+          Productos registrados
+          <strong id="productCount">0</strong>
+        </div>
+
+        <div class="stat">
+          Categorías registradas
+          <strong id="categoryCount">0</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:25px">
+      <h2>Productos de Callegold</h2>
+      <p>Listado de productos almacenados en Supabase.</p>
+
+      <button id="refreshButton">Actualizar listado</button>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Referencia</th>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Stock</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="productsTable">
+            <tr><td colspan="5">Cargando productos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p id="dashboardMessage" class="message" role="status"></p>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(() => {
+  const SUPABASE_URL = "https://xwczqbocbsythaegyonh.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_RPwSuH7ia7ctxVK4I8meFw_3qDlaw2P";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const loginSection = document.getElementById("loginSection");
+  const dashboardSection = document.getElementById("dashboardSection");
+  const loginForm = document.getElementById("loginForm");
+  const loginMessage = document.getElementById("loginMessage");
+  const dashboardMessage = document.getElementById("dashboardMessage");
+  const logoutButton = document.getElementById("logoutButton");
+
+  function showMessage(element, message, type = "error") {
+    element.textContent = message;
+    element.className = "message " + type;
+  }
+
+  function showLogin() {
+    loginSection.classList.remove("hidden");
+    dashboardSection.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+  }
+
+  function showDashboard(user, role) {
+    loginSection.classList.add("hidden");
+    dashboardSection.classList.remove("hidden");
+    logoutButton.classList.remove("hidden");
+
+    document.getElementById("adminEmail").textContent = user.email;
+    document.getElementById("adminRole").textContent = role;
+  }
+
+  async function verifyAdmin(user) {
+    const { data, error } = await db
+      .from("admin_users")
+      .select("user_id, role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error("No fue posible verificar los permisos del administrador.");
+    }
+
+    if (!data) {
+      await db.auth.signOut();
+      throw new Error("Tu cuenta no está autorizada para acceder al panel.");
+    }
+
+    showDashboard(user, data.role);
+    await loadDashboardData();
+  }
+
+  async function loadDashboardData() {
+    dashboardMessage.textContent = "Consultando información...";
+
+    const [productsResult, categoriesResult] = await Promise.all([
+      db.from("products").select("id, reference, name, price, stock, is_active"),
+      db.from("categories").select("id")
+    ]);
+
+    if (productsResult.error || categoriesResult.error) {
+      showMessage(
+        dashboardMessage,
+        "No se pudieron cargar los datos. Verifica las políticas RLS."
+      );
+      return;
+    }
+
+    const products = productsResult.data || [];
+    const categories = categoriesResult.data || [];
+
+    document.getElementById("productCount").textContent = products.length;
+    document.getElementById("categoryCount").textContent = categories.length;
+
+    const table = document.getElementById("productsTable");
+
+    if (!products.length) {
+      table.innerHTML = '<tr><td colspan="5">No hay productos registrados.</td></tr>';
+    } else {
+      table.innerHTML = products.map(product => {
+        const row = document.createElement("tr");
+
+        const values = [
+          product.reference || "Sin referencia",
+          product.name || "Sin nombre",
+          product.price == null
+            ? "Por consultar"
+            : "$" + Number(product.price).toLocaleString("es-CO"),
+          product.stock ?? 0,
+          product.is_active ? "Activo" : "Inactivo"
+        ];
+
+        values.forEach((value, index) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+
+          if (index === 4 && product.is_active) {
+            cell.className = "status";
+          }
+
+          row.appendChild(cell);
+        });
+
+        return row;
+      });
+
+      table.replaceChildren(...table.innerHTML ? [] : []);
+      table.replaceChildren(...products.map(product => {
+        const row = document.createElement("tr");
+        [
+          product.reference || "Sin referencia",
+          product.name || "Sin nombre",
+          product.price == null
+            ? "Por consultar"
+            : "$" + Number(product.price).toLocaleString("es-CO"),
+          product.stock ?? 0,
+          product.is_active ? "Activo" : "Inactivo"
+        ].forEach((value, index) => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          if (index === 4 && product.is_active) cell.className = "status";
+          row.appendChild(cell);
+        });
+        return row;
+      }));
+    }
+
+    showMessage(dashboardMessage, "Información actualizada correctamente.", "success");
+  }
+
+  loginForm.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    showMessage(loginMessage, "Verificando acceso...", "success");
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      showMessage(loginMessage, "No se pudo iniciar sesión. Revisa el correo y la contraseña.");
+      return;
+    }
+
+    try {
+      await verifyAdmin(data.user);
+    } catch (error) {
+      showLogin();
+      showMessage(loginMessage, error.message);
+    }
+  });
+
+  logoutButton.addEventListener("click", async () => {
+    await db.auth.signOut();
+    showLogin();
+    loginForm.reset();
+    showMessage(loginMessage, "Sesión cerrada correctamente.", "success");
+  });
+
+  document.getElementById("refreshButton").addEventListener("click", loadDashboardData);
+
+  async function initialize() {
+    const { data, error } = await db.auth.getSession();
+
+    if (error || !data.session) {
+      showLogin();
+      return;
+    }
+
+    try {
+      await verifyAdmin(data.session.user);
+    } catch (error) {
+      showLogin();
+      showMessage(loginMessage, error.message);
+    }
+  }
+
+  initialize();
+})();
+</script>
+
+</body>
+</html>
+
