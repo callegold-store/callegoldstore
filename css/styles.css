@@ -247,3 +247,15 @@ body.filters-open{overflow:hidden}
 .editorial-video-panel:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#100e0b66,transparent 42%);z-index:1;pointer-events:none}
 .editorial-video-panel:before{z-index:2}
 .editorial-video-panel .editorial-caption{z-index:3}
+
+/* Corrección: forzar video real visible en ambos bloques multimedia */
+.hero-video-media{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:#171614!important}
+.hero-video-media>.hero-background-video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;z-index:1!important;opacity:1!important;visibility:visible!important}
+.hero-video-media>.hero-video-fallback{display:none!important}
+.hero-video-media>.hero-media-caption,.hero-video-media>.hero-index{position:absolute;z-index:4!important}
+.editorial-video-panel{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:#171614!important}
+.editorial-video-panel>.editorial-section-video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;z-index:1!important;opacity:1!important;visibility:visible!important}
+.editorial-video-panel>.editorial-caption{position:absolute;z-index:4!important}
+.editorial-video-panel:after{z-index:2!important}
+.editorial-video-panel:before{z-index:3!important}
+.editorial-video-frame>.editorial-background-video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;z-index:1!important}
