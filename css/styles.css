@@ -259,3 +259,10 @@ body.filters-open{overflow:hidden}
 .editorial-video-panel:after{z-index:2!important}
 .editorial-video-panel:before{z-index:3!important}
 .editorial-video-frame>.editorial-background-video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;display:block!important;z-index:1!important}
+
+/* Nuestra esencia: el MP4 reemplaza la fotografía, el texto sigue intacto */
+.editorial.editorial-first .editorial-video-panel{position:relative!important;min-height:500px!important;overflow:hidden!important;background:#171614!important;isolation:isolate!important}
+.editorial.editorial-first .editorial-video-panel video.editorial-section-video{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;min-height:100%!important;object-fit:cover!important;display:block!important;z-index:1!important;opacity:1!important;visibility:visible!important}
+.editorial.editorial-first .editorial-video-panel:after{z-index:2!important;pointer-events:none!important}
+.editorial.editorial-first .editorial-video-panel .editorial-caption{position:absolute!important;z-index:3!important;left:28px;bottom:24px}
+@media(max-width:760px){.editorial.editorial-first .editorial-video-panel{min-height:0!important;aspect-ratio:4/3}}
